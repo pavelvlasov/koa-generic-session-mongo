@@ -51,6 +51,7 @@ app.listen(8080);
 
 ## Options
 
+  - `url` mongodb connection url
   - `db` mongodb-native database object or database name (`test` by default)
   - `collection` collection name (`sessions` by default)
   - `host` db hostname (`127.0.0.1` by default)
