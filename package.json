@@ -1,0 +1,34 @@
+{
+  "name": "koa-sess-mongo-store",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --harmony test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/freakycue/koa-sess-mongo-store.git"
+  },
+  "keywords": [
+    "koa",
+    "sess",
+    "session",
+    "mongo",
+    "store",
+    "co"
+  ],
+  "author": "Pavel Vlasov <freakycue@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/freakycue/koa-sess-mongo-store/issues"
+  },
+  "homepage": "https://github.com/freakycue/koa-sess-mongo-store",
+  "dependencies": {
+    "co-wrapper": "0.0.2",
+    "mongodb": "^1.4.5"
+  },
+  "devDependencies": {
+    "co": "^3.0.6"
+  }
+}
