@@ -16,8 +16,7 @@ var oneDay = 86400 * 1000;
 
 var inherits = require('util').inherits,
   wrap = require('co-wrapper'),
-  EventEmitter = require('events').EventEmitter,
-  events = require('events');
+  EventEmitter = require('events').EventEmitter;
 
 
 module.exports = MongoStore;

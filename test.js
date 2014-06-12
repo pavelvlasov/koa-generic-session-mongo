@@ -38,7 +38,9 @@ var baseTest = co(function *(store) {
   done();
 });
 
-var store = new MongoStore;
+var store = new MongoStore({
+  url: 'mongodb://127.0.0.1:27017/test'
+});
 
 // simple test
 store.on('connect', function() {
