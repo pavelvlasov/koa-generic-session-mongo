@@ -1,5 +1,5 @@
 # koa-sess-mongo-store
-====================
+
 MongoDB store for [koa-session](https://github.com/koajs/koa-session) middleware backed by [node-mongodb-native](https://github.com/mongodb/node-mongodb-native).
 Fork of [connect-to-mongo](https://github.com/2do2go/connect-to-mongo) store.
 
@@ -51,6 +51,7 @@ app.listen(8080);
 
 ## Options
 
+  - `url` mongodb connection url
   - `db` mongodb-native database object or database name (`test` by default)
   - `collection` collection name (`sessions` by default)
   - `host` db hostname (`127.0.0.1` by default)
