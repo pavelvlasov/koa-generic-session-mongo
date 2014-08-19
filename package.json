@@ -1,14 +1,14 @@
 {
-  "name": "koa-sess-mongo-store",
+  "name": "koa-generic-session-mongo",
   "version": "0.1.1",
-  "description": "MongoDB store for koa-session middleware backed by node-mongodb-native.",
+  "description": "MongoDB store for koa-generic-session middleware backed by node-mongodb-native.",
   "main": "index.js",
   "scripts": {
     "test": "node --harmony test.js"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/freakycue/koa-sess-mongo-store.git"
+    "url": "git://github.com/freakycue/koa-generic-session-mongo.git"
   },
   "keywords": [
     "koa",
@@ -21,9 +21,9 @@
   "author": "Pavel Vlasov <freakycue@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/freakycue/koa-sess-mongo-store/issues"
+    "url": "https://github.com/freakycue/koa-generic-session-mongo/issues"
   },
-  "homepage": "https://github.com/freakycue/koa-sess-mongo-store",
+  "homepage": "https://github.com/freakycue/koa-generic-session-mongo",
   "dependencies": {
     "co-wrapper": "0.0.2",
     "mongodb": "^1.4.5"
