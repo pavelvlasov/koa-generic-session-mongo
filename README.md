@@ -1,6 +1,6 @@
-# koa-sess-mongo-store
+# koa-generic-session-mongo
 
-MongoDB store for [koa-session](https://github.com/koajs/koa-session) middleware backed by [node-mongodb-native](https://github.com/mongodb/node-mongodb-native).
+MongoDB store for [koa-generic-session](https://github.com/koajs/generic-session) middleware backed by [node-mongodb-native](https://github.com/mongodb/node-mongodb-native).
 Fork of [connect-to-mongo](https://github.com/2do2go/connect-to-mongo) store.
 
 ## Installation
@@ -14,7 +14,7 @@ Fork of [connect-to-mongo](https://github.com/2do2go/connect-to-mongo) store.
 ### Example
 ```js
 var koa = require('koa');
-var session = require('koa-sess');
+var session = require('koa-generic-session');
 var MongoStore = require('koa-sess-mongo-store');
 
 var app = koa();
