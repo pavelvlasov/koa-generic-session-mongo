@@ -6,7 +6,7 @@ Fork of [connect-to-mongo](https://github.com/2do2go/connect-to-mongo) store.
 ## Installation
 
 ```sh
-  npm install koa-sess koa-sess-mongo-store --save
+  npm install koa-generic-session koa-generic-session-mongo --save
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ Fork of [connect-to-mongo](https://github.com/2do2go/connect-to-mongo) store.
 ```js
 var koa = require('koa');
 var session = require('koa-generic-session');
-var MongoStore = require('koa-sess-mongo-store');
+var MongoStore = require('koa-generic-session-mongo');
 
 var app = koa();
 app.keys = ['keys', 'keykeys'];
