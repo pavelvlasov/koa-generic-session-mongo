@@ -68,9 +68,7 @@ var MongoStore = (function (_EventEmitter) {
       user: user,
       password: password
     });
-    this.col.then(MongoStore._ensureIndexes).then(function () {
-      self.emit('connect');
-    });
+    this.col.then(MongoStore._ensureIndexes).then(this.emit.bind(this, 'connect'));
   }
 
   _inherits(MongoStore, _EventEmitter);

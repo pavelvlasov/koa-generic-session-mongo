@@ -43,15 +43,29 @@ export default class MongoStore extends EventEmitter {
       });
     this.col
       .then(MongoStore._ensureIndexes)
-      .then(function () {
-        self.emit('connect');
-      });
+      .then(this.emit.bind(this, 'connect'));
   }
 
+  /**
+   * Init session collection with given database object
+   * @param db Database object
+   * @param collection Collection name which will store our sessions
+   * @returns {Promise.<*>}
+   * @private
+   */
   _initWithDb({db, collection=DEFAULT_COLLECTION}) {
     return Promise.resolve(db.collection(collection));
   }
 
+  /**
+   *
+   * @param url Connection string to db
+   * @param user
+   * @param password
+   * @param collection Collection name which will store our sessions
+   * @returns {Promise}
+   * @private
+   */
   _initWithUrl({url, user, password, collection=DEFAULT_COLLECTION}) {
     return new Promise((resolve, reject) => {
       new MongoClient().connect(url, function (err, db) {
