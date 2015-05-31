@@ -54,14 +54,14 @@ MongoClient.connect('mongodb://127.0.0.1:27017/testdb', function(err, db) {
     baseTest(this);
   });
 });
-
-// test mongodb auth
-MongoClient.connect('mongodb://127.0.0.1:27017/testauth', function(err, db) {
-  db.addUser('user', 'pass', function(err, res) {
-    assert.ok(!err, '#addUser error');
-    var store = new MongoStore({user: 'user', password: 'pass', db: 'testauth'});
-    store.on('connect', function() {
-      baseTest(this);
-    });
-  });
-});
+//
+//// test mongodb auth
+//MongoClient.connect('mongodb://127.0.0.1:27017/testauth', function(err, db) {
+//  db.addUser('user', 'pass', function(err, res) {
+//    assert.ok(!err, '#addUser error');
+//    var store = new MongoStore({user: 'user', password: 'pass', db: 'testauth'});
+//    store.on('connect', function() {
+//      baseTest(this);
+//    });
+//  });
+//});
