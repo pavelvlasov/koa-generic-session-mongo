@@ -34,7 +34,7 @@ export default class MongoStore extends EventEmitter {
       } = options;
 
     this.ttl = ttl;
-    this.col = typeof db == 'string' ?
+    this.col = db && typeof db !== 'string' ?
       this._initWithDb({db, collection}) :
       this._initWithUrl({
         url: url || MongoStore._makeConnectionString(options),
@@ -135,6 +135,7 @@ export default class MongoStore extends EventEmitter {
 
     return yield update({sid: sid}, sess, {upsert: true});
   }
+
   /**
    * Destroy the session associated with the given `sid`.
    *

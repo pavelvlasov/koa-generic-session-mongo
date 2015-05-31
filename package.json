@@ -32,6 +32,12 @@
   },
   "devDependencies": {
     "babel": "^5.4.7",
-    "co": "^3.0.6"
+    "co": "^3.0.6",
+    "ghooks": "^0.3.2"
+  },
+  "config": {
+    "ghooks": {
+      "pre-commit": "npm run build"
+    }
   }
 }

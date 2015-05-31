@@ -63,7 +63,7 @@ var MongoStore = (function (_EventEmitter) {
     var password = options.password;
 
     this.ttl = ttl;
-    this.col = typeof db == 'string' ? this._initWithDb({ db: db, collection: collection }) : this._initWithUrl({
+    this.col = db && typeof db !== 'string' ? this._initWithDb({ db: db, collection: collection }) : this._initWithUrl({
       url: url || MongoStore._makeConnectionString(options),
       user: user,
       password: password
