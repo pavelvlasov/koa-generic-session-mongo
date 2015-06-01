@@ -1,13 +1,3 @@
-/*!
- * koa-sess-mongo-store
- * Copyright(c) 2013 Pavel Vlasov <freakycue@gmail.com>
- * MIT Licensed
- */
-
-/**
- * One day in milliseconds.
- * @type {number}
- */
 'use strict';
 
 var _inherits = require('babel-runtime/helpers/inherits')['default'];
@@ -30,14 +20,25 @@ _Object$defineProperty(exports, '__esModule', {
   value: true
 });
 
+/*!
+ * koa-sess-mongo-store
+ * Copyright(c) 2013 Pavel Vlasov <freakycue@gmail.com>
+ * MIT Licensed
+ */
+
 var _events = require('events');
 
 var _mongodb = require('mongodb');
 
-var _coThunkify = require('co-thunkify');
+var _thunkify = require('thunkify');
 
-var _coThunkify2 = _interopRequireDefault(_coThunkify);
+var _thunkify2 = _interopRequireDefault(_thunkify);
 
+var _debug = require('debug');
+
+var _debug2 = _interopRequireDefault(_debug);
+
+var log = (0, _debug2['default'])('koa-generic-session-mongo:store');
 var ONE_DAY = 86400 * 1000;
 var DEFAULT_COLLECTION = 'sessions';
 
@@ -50,6 +51,8 @@ var MongoStore = (function (_EventEmitter) {
    */
 
   function MongoStore() {
+    var _this = this;
+
     var options = arguments[0] === undefined ? {} : arguments[0];
 
     _classCallCheck(this, MongoStore);
@@ -68,7 +71,13 @@ var MongoStore = (function (_EventEmitter) {
       user: user,
       password: password
     });
-    this.col.then(MongoStore._ensureIndexes).then(this.emit.bind(this, 'connect'));
+
+    this.col.then(MongoStore._ensureIndexes).then(function (conn) {
+      log('connected to %s:%s/%s', conn.db.serverConfig.host, conn.db.serverConfig.port, conn.db.databaseName);
+      _this.emit('connect', conn);
+    })['catch'](function (err) {
+      _this.emit('error', err);
+    });
   }
 
   _inherits(MongoStore, _EventEmitter);
@@ -121,7 +130,7 @@ var MongoStore = (function (_EventEmitter) {
               if (err) {
                 reject(err);
               } else if (!res) {
-                throw new Error('mongodb authentication failed');
+                reject(new Error('mongodb authentication failed'));
               } else {
                 resolve(col);
               }
@@ -152,10 +161,14 @@ var MongoStore = (function (_EventEmitter) {
 
           case 2:
             col = context$2$0.sent;
-            findOne = (0, _coThunkify2['default'])(col, col.findOne);
-            return context$2$0.abrupt('return', findOne({ sid: sid }, { _id: 0, ttl: 0, sid: 0 }));
+            findOne = _thunkify2['default'].call(col, col.findOne);
+            context$2$0.next = 6;
+            return findOne({ sid: sid }, { _id: 0, ttl: 0, sid: 0 });
 
-          case 5:
+          case 6:
+            return context$2$0.abrupt('return', context$2$0.sent);
+
+          case 7:
           case 'end':
             return context$2$0.stop();
         }
@@ -182,7 +195,7 @@ var MongoStore = (function (_EventEmitter) {
 
           case 3:
             col = context$2$0.sent;
-            update = (0, _coThunkify2['default'])(col, col.update);
+            update = _thunkify2['default'].call(col, col.update);
 
             sess.sid = sid;
             sess.ttl = new Date((this.ttl || ('number' == typeof maxAge ? maxAge : ONE_DAY)) + Date.now());
@@ -218,7 +231,7 @@ var MongoStore = (function (_EventEmitter) {
 
           case 2:
             col = context$2$0.sent;
-            remove = (0, _coThunkify2['default'])(col, col.remove);
+            remove = _thunkify2['default'].call(col, col.remove);
             context$2$0.next = 6;
             return remove({ sid: sid });
 
