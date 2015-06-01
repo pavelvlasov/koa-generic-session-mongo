@@ -161,7 +161,7 @@ var MongoStore = (function (_EventEmitter) {
 
           case 2:
             col = context$2$0.sent;
-            findOne = _thunkify2['default'].call(col, col.findOne);
+            findOne = (0, _thunkify2['default'])(col.findOne.bind(col));
             context$2$0.next = 6;
             return findOne({ sid: sid }, { _id: 0, ttl: 0, sid: 0 });
 
@@ -195,7 +195,7 @@ var MongoStore = (function (_EventEmitter) {
 
           case 3:
             col = context$2$0.sent;
-            update = _thunkify2['default'].call(col, col.update);
+            update = (0, _thunkify2['default'])(col.update.bind(col));
 
             sess.sid = sid;
             sess.ttl = new Date((this.ttl || ('number' == typeof maxAge ? maxAge : ONE_DAY)) + Date.now());
@@ -231,7 +231,7 @@ var MongoStore = (function (_EventEmitter) {
 
           case 2:
             col = context$2$0.sent;
-            remove = _thunkify2['default'].call(col, col.remove);
+            remove = (0, _thunkify2['default'])(col.remove.bind(col));
             context$2$0.next = 6;
             return remove({ sid: sid });
 

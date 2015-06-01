@@ -4,7 +4,7 @@
   "description": "MongoDB store for koa-generic-session middleware backed by node-mongodb-native.",
   "main": "dist/store.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha --require mocha-generators ./tests/index.js",
+    "test": "node_modules/.bin/mocha ./tests/index.js",
     "build": "node_modules/.bin/babel --optional runtime -d dist/ src/"
   },
   "repository": {
@@ -34,9 +34,9 @@
   "devDependencies": {
     "babel": "^5.4.7",
     "chai": "^2.3.0",
+    "co-mocha": "^1.1.0",
     "ghooks": "^0.3.2",
-    "mocha": "^2.2.5",
-    "mocha-generators": "^1.1.1"
+    "mocha": "^2.2.5"
   },
   "config": {
     "ghooks": {

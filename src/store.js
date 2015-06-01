@@ -132,7 +132,7 @@ export default class MongoStore extends EventEmitter {
    */
   *get(sid) {
     const col = yield this.col;
-    const findOne = thunkify.call(col, col.findOne);
+    const findOne = thunkify(col.findOne.bind(col));
 
     return yield findOne({sid: sid}, {_id: 0, ttl: 0, sid: 0});
   }
@@ -147,7 +147,7 @@ export default class MongoStore extends EventEmitter {
   *set(sid, sess) {
     const maxAge = sess.cookie.maxAge;
     const col = yield this.col;
-    const update = thunkify.call(col, col.update);
+    const update = thunkify(col.update.bind(col));
 
     sess.sid = sid;
     sess.ttl = new Date((this.ttl || ('number' == typeof maxAge
@@ -164,7 +164,7 @@ export default class MongoStore extends EventEmitter {
    */
   *destroy(sid) {
     const col = yield this.col;
-    const remove = thunkify.call(col, col.remove);
+    const remove = thunkify(col.remove.bind(col));
 
     yield remove({sid: sid});
   }

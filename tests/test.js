@@ -54,13 +54,12 @@ describe('test auth', function() {
   });
 
   it('should add user', function *() {
-    yield thunkify.call(db, db.removeUser)('han');
-    let user = yield thunkify.call(db, db.addUser)('han', 'solo');
+    yield thunkify(db.removeUser.bind(db))('han');
+    let user = yield thunkify(db.addUser.bind(db))('han', 'solo');
   });
 
   describeStore('store from db object', () => {return {db}}, {cleanDb: true});
 
-  //todo not working for me
-  //describeStore('auth store', {user: 'han', password: 'solo', db: 'testauth'});
+  describeStore('auth store', {user: 'han', password: 'solo', db: 'testauth'});
 });
 
