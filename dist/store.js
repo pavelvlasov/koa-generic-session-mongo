@@ -75,6 +75,14 @@ var MongoStore = (function (_EventEmitter) {
 
   _createClass(MongoStore, [{
     key: '_initWithDb',
+
+    /**
+     * Init session collection with given database object
+     * @param db Database object
+     * @param collection Collection name which will store our sessions
+     * @returns {Promise.<*>}
+     * @private
+     */
     value: function _initWithDb(_ref) {
       var db = _ref.db;
       var _ref$collection = _ref.collection;
@@ -84,6 +92,16 @@ var MongoStore = (function (_EventEmitter) {
     }
   }, {
     key: '_initWithUrl',
+
+    /**
+     *
+     * @param url Connection string to db
+     * @param user
+     * @param password
+     * @param collection Collection name which will store our sessions
+     * @returns {Promise}
+     * @private
+     */
     value: function _initWithUrl(_ref2) {
       var url = _ref2.url;
       var user = _ref2.user;

@@ -1,19 +1,19 @@
+'use strict';
+
 /*!
  * koa-sess-mongo-store
  * Copyright(c) 2013 Pavel Vlasov <freakycue@gmail.com>
  * MIT Licensed
  */
 
-/**
- * One day in milliseconds.
- * @type {number}
- */
-const ONE_DAY = 86400 * 1000;
-const DEFAULT_COLLECTION = 'sessions';
-
 import {EventEmitter} from 'events';
 import {MongoClient} from 'mongodb';
-import thunkify from 'co-thunkify';
+import thunkify from 'thunkify';
+import debug from 'debug';
+
+const log = debug('koa-generic-session-mongo:store');
+const ONE_DAY = 86400 * 1000;
+const DEFAULT_COLLECTION = 'sessions';
 
 export default class MongoStore extends EventEmitter {
   /**
@@ -41,9 +41,15 @@ export default class MongoStore extends EventEmitter {
         user,
         password
       });
+
     this.col
       .then(MongoStore._ensureIndexes)
-      .then(this.emit.bind(this, 'connect'));
+      .then((conn) => {
+        log('connected to %s:%s/%s', conn.db.serverConfig.host, conn.db.serverConfig.port, conn.db.databaseName);
+        this.emit('connect', conn);
+      }).catch((err) => {
+        this.emit('error', err);
+      });
   }
 
   /**
@@ -79,7 +85,7 @@ export default class MongoStore extends EventEmitter {
             if (err) {
               reject(err);
             } else if (!res) {
-              throw new Error('mongodb authentication failed');
+              reject(new Error('mongodb authentication failed'));
             } else {
               resolve(col);
             }
@@ -126,9 +132,9 @@ export default class MongoStore extends EventEmitter {
    */
   *get(sid) {
     const col = yield this.col;
-    const findOne = thunkify(col, col.findOne);
+    const findOne = thunkify.call(col, col.findOne);
 
-    return findOne({sid: sid}, {_id: 0, ttl: 0, sid: 0});
+    return yield findOne({sid: sid}, {_id: 0, ttl: 0, sid: 0});
   }
 
   /**
@@ -141,7 +147,7 @@ export default class MongoStore extends EventEmitter {
   *set(sid, sess) {
     const maxAge = sess.cookie.maxAge;
     const col = yield this.col;
-    const update = thunkify(col, col.update);
+    const update = thunkify.call(col, col.update);
 
     sess.sid = sid;
     sess.ttl = new Date((this.ttl || ('number' == typeof maxAge
@@ -158,7 +164,7 @@ export default class MongoStore extends EventEmitter {
    */
   *destroy(sid) {
     const col = yield this.col;
-    const remove = thunkify(col, col.remove);
+    const remove = thunkify.call(col, col.remove);
 
     yield remove({sid: sid});
   }
