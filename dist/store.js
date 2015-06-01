@@ -66,15 +66,14 @@ var MongoStore = (function (_EventEmitter) {
     var password = options.password;
 
     this.ttl = ttl;
-    this.col = db && typeof db !== 'string' ? this._initWithDb({ db: db, collection: collection }) : this._initWithUrl({
+    this.col = db && typeof db !== 'string' && typeof db.dropDatabase === 'function' ? this._initWithDb({ db: db, collection: collection }) : this._initWithUrl({
       url: url || MongoStore._makeConnectionString(options),
       user: user,
       password: password
     });
 
-    this.col.then(MongoStore._ensureIndexes).then(function (conn) {
-      log('connected to %s:%s/%s', conn.db.serverConfig.host, conn.db.serverConfig.port, conn.db.databaseName);
-      _this.emit('connect', conn);
+    this.col.then(MongoStore._ensureIndexes).then(function (collection) {
+      _this.emit('connect', collection);
     })['catch'](function (err) {
       _this.emit('error', err);
     });

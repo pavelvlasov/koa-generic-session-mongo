@@ -60,6 +60,27 @@ describe('test auth', function() {
 
   describeStore('store from db object', () => {return {db}}, {cleanDb: true});
 
+
   describeStore('auth store', {user: 'han', password: 'solo', db: 'testauth'});
+});
+
+describe('closed db', function() {
+  let db, store;
+
+  before(function *() {
+    db = yield thunkify(MongoClient.connect)('mongodb://127.0.0.1:27017/test');
+    yield thunkify(db.close.bind(db))();
+    store = new MongoStore({db})
+  });
+
+  it('should crush', function *() {
+    let throwsError;
+    try {
+      yield store.get('123');
+    } catch (err) {
+      throwsError = true;
+    }
+    assert(throwsError, 'should throw error');
+  });
 });
 

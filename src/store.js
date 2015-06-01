@@ -34,7 +34,7 @@ export default class MongoStore extends EventEmitter {
       } = options;
 
     this.ttl = ttl;
-    this.col = db && typeof db !== 'string' ?
+    this.col = db && typeof db !== 'string' && typeof db.dropDatabase === 'function' ?
       this._initWithDb({db, collection}) :
       this._initWithUrl({
         url: url || MongoStore._makeConnectionString(options),
@@ -44,9 +44,8 @@ export default class MongoStore extends EventEmitter {
 
     this.col
       .then(MongoStore._ensureIndexes)
-      .then((conn) => {
-        log('connected to %s:%s/%s', conn.db.serverConfig.host, conn.db.serverConfig.port, conn.db.databaseName);
-        this.emit('connect', conn);
+      .then((collection) => {
+        this.emit('connect', collection);
       }).catch((err) => {
         this.emit('error', err);
       });
