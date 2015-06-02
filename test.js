@@ -7,15 +7,22 @@ var assert = require('assert'),
   MongoClient = require('mongodb').MongoClient,
   MongoStore = require('./');
 
-var testsCount = 3;
+var DB = 'koa_generic_session_test';
+var testsCount = 4;
 
 var done = (function () {
   var count = 0;
   return function () {
     ++count;
     if (count == testsCount) {
-      console.log('done');
-      process.exit(0);
+      // Cleanup test database
+      MongoClient.connect('mongodb://127.0.0.1:27017/' + DB, function(err, db) {
+        db.dropDatabase(DB, function (err) {
+          if (err) throw err;
+          console.log('done');
+          process.exit(0);
+        });
+      });
     }
   };
 })();
@@ -39,7 +46,7 @@ var baseTest = co(function *(store) {
 });
 
 var store = new MongoStore({
-  url: 'mongodb://127.0.0.1:27017/test'
+  url: 'mongodb://127.0.0.1:27017/' + DB
 });
 
 // simple test
@@ -48,7 +55,7 @@ store.on('connect', function() {
 });
 
 // test with initialized db object
-MongoClient.connect('mongodb://127.0.0.1:27017/testdb', function(err, db) {
+MongoClient.connect('mongodb://127.0.0.1:27017/' + DB, function(err, db) {
   var store = new MongoStore({db: db});
   store.on('connect', function() {
     baseTest(this);
@@ -56,12 +63,32 @@ MongoClient.connect('mongodb://127.0.0.1:27017/testdb', function(err, db) {
 });
 
 // test mongodb auth
-MongoClient.connect('mongodb://127.0.0.1:27017/testauth', function(err, db) {
+MongoClient.connect('mongodb://127.0.0.1:27017/' + DB, function(err, db) {
   db.addUser('user', 'pass', function(err, res) {
     assert.ok(!err, '#addUser error');
-    var store = new MongoStore({user: 'user', password: 'pass', db: 'testauth'});
+    var store = new MongoStore({user: 'user', password: 'pass', db: DB});
     store.on('connect', function() {
       baseTest(this);
     });
   });
+  // Cleanup user
+  db.removeUser('user', 'pass', function(err, res) { if (err) throw err });
 });
+
+// test throws error if url and extra connection info options are provided
+(function url_and_connection_info_exclusive () {
+  var error = /url option is exclusive/;
+  assert.throws(function () {
+    new MongoStore({url: 'mongodb://127.0.0.1:27017', host: 'localhost'});
+  }, error);
+  assert.throws(function () {
+    new MongoStore({url: 'mongodb://127.0.0.1:27017', port: '27017'});
+  }, error);
+  assert.throws(function () {
+    new MongoStore({url: 'mongodb://127.0.0.1:27017', db: DB});
+  }, error);
+  assert.throws(function () {
+    new MongoStore({url: 'mongodb://127.0.0.1:27017', ssl: true});
+  }, error);
+  done();
+})();
