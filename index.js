@@ -46,7 +46,9 @@ function MongoStore(options) {
     self.col.ensureIndex({ttl: 1}, {expireAfterSeconds: 0}, done);
     self.col.ensureIndex({sid: 1}, {unique: true}, done);
   }
-
+  if (options.url && ('host' in options || 'port' in options || 'db' in options || 'ssl' in options)) {
+    throw new Error('url option is exclusive from host, port, db and ssl options, please include as a full url connection string');
+  }
   if (options.db && (typeof options.db !== 'string')) {
     this.col = options.db.collection(options.collection || 'sessions');
     ensureIndexes();
