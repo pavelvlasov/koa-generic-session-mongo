@@ -54,12 +54,15 @@ describe('test auth', function() {
   });
 
   it('should add user', function *() {
-    yield thunkify(db.removeUser.bind(db))('han');
+    try {
+      yield thunkify(db.removeUser.bind(db))('han');
+    } catch (err) {
+      //skip error
+    }
     let user = yield thunkify(db.addUser.bind(db))('han', 'solo');
   });
 
   describeStore('store from db object', () => {return {db}}, {cleanDb: true});
-
 
   describeStore('auth store', {user: 'han', password: 'solo', db: 'testauth'});
 });
@@ -81,6 +84,21 @@ describe('closed db', function() {
       throwsError = true;
     }
     assert(throwsError, 'should throw error');
+  });
+});
+
+describe('url info exclusive', function () {
+  it('should fail if host and url provided', function *() {
+    assert.throw(() => {new MongoStore({url: 'mongodb://127.0.0.1:27017', host: 'localhost'})});
+  });
+  it('should fail if port and url provided', function *() {
+    assert.throw(() => {new MongoStore({url: 'mongodb://127.0.0.1:27017', port: '27017'})});
+  });
+  it('should fail if db and url provided', function *() {
+    assert.throw(() => {new MongoStore({url: 'mongodb://127.0.0.1:27017', db: 'admin'})});
+  });
+  it('should fail if ssl and url provided', function *() {
+    assert.throw(() => {new MongoStore({url: 'mongodb://127.0.0.1:27017', ssl: true})});
   });
 });
 

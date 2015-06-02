@@ -33,6 +33,10 @@ export default class MongoStore extends EventEmitter {
       password
       } = options;
 
+    if (url && ('host' in options || 'port' in options || 'db' in options || 'ssl' in options)) {
+      throw new Error('url option is exclusive from host, port, db and ssl options, please include as a full url connection string');
+    }
+
     this.ttl = ttl;
     this.col = db && typeof db !== 'string' && typeof db.dropDatabase === 'function' ?
       this._initWithDb({db, collection}) :
