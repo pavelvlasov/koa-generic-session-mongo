@@ -1,6 +1,6 @@
 {
   "name": "koa-generic-session-mongo",
-  "version": "0.1.2",
+  "version": "0.2.2",
   "description": "MongoDB store for koa-generic-session middleware backed by node-mongodb-native.",
   "main": "dist/store.js",
   "scripts": {
