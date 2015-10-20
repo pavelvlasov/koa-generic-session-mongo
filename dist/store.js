@@ -73,6 +73,7 @@ var MongoStore = (function (_EventEmitter) {
     this.col = db && typeof db !== 'string' && typeof db.dropDatabase === 'function' ? this._initWithDb({ db: db, collection: collection }) : this._initWithUrl({
       url: url || MongoStore._makeConnectionString(options),
       user: user,
+      collection: collection,
       password: password
     });
 
