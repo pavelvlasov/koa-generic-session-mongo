@@ -256,7 +256,7 @@ var MongoStore = (function (_EventEmitter) {
       var _ref3$ssl = _ref3.ssl;
       var ssl = _ref3$ssl === undefined ? false : _ref3$ssl;
 
-      return 'mongodb://' + host + ':' + port + ')/' + db + '?ssl=' + ssl;
+      return 'mongodb://' + host + ':' + port + '/' + db + '?ssl=' + ssl;
     }
   }, {
     key: '_ensureIndexes',
