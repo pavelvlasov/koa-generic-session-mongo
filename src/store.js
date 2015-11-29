@@ -101,7 +101,7 @@ export default class MongoStore extends EventEmitter {
   }
 
   static _makeConnectionString({host='127.0.0.1', port=27017, db='test', ssl=false}) {
-    return `mongodb://${host}:${port})/${db}?ssl=${ssl}`;
+    return `mongodb://${host}:${port}/${db}?ssl=${ssl}`;
   }
 
   /**
