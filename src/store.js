@@ -148,7 +148,7 @@ export default class MongoStore extends EventEmitter {
    * @api public
    */
   *set(sid, sess) {
-    const maxAge = sess.cookie.maxAge;
+    const maxAge = sess.cookie.maxAge || sess.cookie.maxage;
     const col = yield this.col;
     const update = thunkify(col.update.bind(col));
 
