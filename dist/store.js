@@ -73,7 +73,6 @@ var MongoStore = (function (_EventEmitter) {
     this.col = db && typeof db !== 'string' && typeof db.dropDatabase === 'function' ? this._initWithDb({ db: db, collection: collection }) : this._initWithUrl({
       url: url || MongoStore._makeConnectionString(options),
       user: user,
-      collection: collection,
       password: password
     });
 
@@ -193,7 +192,7 @@ var MongoStore = (function (_EventEmitter) {
       return _regeneratorRuntime.wrap(function set$(context$2$0) {
         while (1) switch (context$2$0.prev = context$2$0.next) {
           case 0:
-            maxAge = sess.cookie.maxAge;
+            maxAge = sess.cookie.maxAge || sess.cookie.maxage;
             context$2$0.next = 3;
             return this.col;
 
