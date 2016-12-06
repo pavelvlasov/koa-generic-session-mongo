@@ -1,14 +1,18 @@
 'use strict';
 
-var _inherits = require('babel-runtime/helpers/inherits')['default'];
+/*!
+ * koa-generic-session-mongo
+ * Copyright(c) 2013 Pavel Vlasov <freakycue@gmail.com>
+ * MIT Licensed
+ */
 
 var _get = require('babel-runtime/helpers/get')['default'];
+
+var _inherits = require('babel-runtime/helpers/inherits')['default'];
 
 var _createClass = require('babel-runtime/helpers/create-class')['default'];
 
 var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
-
-var _Object$defineProperty = require('babel-runtime/core-js/object/define-property')['default'];
 
 var _Promise = require('babel-runtime/core-js/promise')['default'];
 
@@ -16,15 +20,9 @@ var _regeneratorRuntime = require('babel-runtime/regenerator')['default'];
 
 var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
 
-_Object$defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, '__esModule', {
   value: true
 });
-
-/*!
- * koa-sess-mongo-store
- * Copyright(c) 2013 Pavel Vlasov <freakycue@gmail.com>
- * MIT Licensed
- */
 
 var _events = require('events');
 
@@ -43,6 +41,8 @@ var ONE_DAY = 86400 * 1000;
 var DEFAULT_COLLECTION = 'sessions';
 
 var MongoStore = (function (_EventEmitter) {
+  _inherits(MongoStore, _EventEmitter);
+
   /**
    * Initialize MongoStore with the given `options`.
    *
@@ -53,12 +53,11 @@ var MongoStore = (function (_EventEmitter) {
   function MongoStore() {
     var _this = this;
 
-    var options = arguments[0] === undefined ? {} : arguments[0];
+    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
     _classCallCheck(this, MongoStore);
 
     _get(Object.getPrototypeOf(MongoStore.prototype), 'constructor', this).call(this);
-    var ttl = options.ttl;
     var db = options.db;
     var collection = options.collection;
     var url = options.url;
@@ -69,7 +68,6 @@ var MongoStore = (function (_EventEmitter) {
       throw new Error('url option is exclusive from host, port, db and ssl options, please include as a full url connection string');
     }
 
-    this.ttl = ttl;
     this.col = db && typeof db !== 'string' && typeof db.dropDatabase === 'function' ? this._initWithDb({ db: db, collection: collection }) : this._initWithUrl({
       url: url || MongoStore._makeConnectionString(options),
       user: user,
@@ -83,18 +81,16 @@ var MongoStore = (function (_EventEmitter) {
     });
   }
 
-  _inherits(MongoStore, _EventEmitter);
+  /**
+   * Init session collection with given database object
+   * @param db Database object
+   * @param collection Collection name which will store our sessions
+   * @returns {Promise.<*>}
+   * @private
+   */
 
   _createClass(MongoStore, [{
     key: '_initWithDb',
-
-    /**
-     * Init session collection with given database object
-     * @param db Database object
-     * @param collection Collection name which will store our sessions
-     * @returns {Promise.<*>}
-     * @private
-     */
     value: function _initWithDb(_ref) {
       var db = _ref.db;
       var _ref$collection = _ref.collection;
@@ -102,8 +98,6 @@ var MongoStore = (function (_EventEmitter) {
 
       return _Promise.resolve(db.collection(collection));
     }
-  }, {
-    key: '_initWithUrl',
 
     /**
      *
@@ -114,6 +108,8 @@ var MongoStore = (function (_EventEmitter) {
      * @returns {Promise}
      * @private
      */
+  }, {
+    key: '_initWithUrl',
     value: function _initWithUrl(_ref2) {
       var url = _ref2.url;
       var user = _ref2.user;
@@ -177,8 +173,6 @@ var MongoStore = (function (_EventEmitter) {
         }
       }, get, this);
     })
-  }, {
-    key: 'set',
 
     /**
      * Commit the given `sess` object associated with the given `sid`.
@@ -187,12 +181,14 @@ var MongoStore = (function (_EventEmitter) {
      * @param {Session} sess
      * @api public
      */
-    value: _regeneratorRuntime.mark(function set(sid, sess) {
+  }, {
+    key: 'set',
+    value: _regeneratorRuntime.mark(function set(sid, sess, ttl) {
       var maxAge, col, update;
       return _regeneratorRuntime.wrap(function set$(context$2$0) {
         while (1) switch (context$2$0.prev = context$2$0.next) {
           case 0:
-            maxAge = sess.cookie.maxAge || sess.cookie.maxage;
+            maxAge = sess.cookie && (sess.cookie.maxAge || sess.cookie.maxage);
             context$2$0.next = 3;
             return this.col;
 
@@ -201,7 +197,7 @@ var MongoStore = (function (_EventEmitter) {
             update = (0, _thunkify2['default'])(col.update.bind(col));
 
             sess.sid = sid;
-            sess.ttl = new Date((this.ttl || ('number' == typeof maxAge ? maxAge : ONE_DAY)) + Date.now());
+            sess.ttl = new Date((ttl || ('number' == typeof maxAge ? maxAge : ONE_DAY)) + Date.now());
 
             context$2$0.next = 9;
             return update({ sid: sid }, sess, { upsert: true });
@@ -215,8 +211,6 @@ var MongoStore = (function (_EventEmitter) {
         }
       }, set, this);
     })
-  }, {
-    key: 'destroy',
 
     /**
      * Destroy the session associated with the given `sid`.
@@ -224,6 +218,8 @@ var MongoStore = (function (_EventEmitter) {
      * @param {String} sid
      * @api public
      */
+  }, {
+    key: 'destroy',
     value: _regeneratorRuntime.mark(function destroy(sid) {
       var col, remove;
       return _regeneratorRuntime.wrap(function destroy$(context$2$0) {
@@ -258,14 +254,14 @@ var MongoStore = (function (_EventEmitter) {
 
       return 'mongodb://' + host + ':' + port + '/' + db + '?ssl=' + ssl;
     }
-  }, {
-    key: '_ensureIndexes',
 
     /**
      * Create ttl and sid indexes
      * @param col
      * @returns {Promise}
      */
+  }, {
+    key: '_ensureIndexes',
     value: function _ensureIndexes(col) {
       return new _Promise(function (resolve, reject) {
         var times = 2;
