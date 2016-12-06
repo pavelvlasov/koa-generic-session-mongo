@@ -1,7 +1,7 @@
 'use strict';
 
 /*!
- * koa-sess-mongo-store
+ * koa-generic-session-mongo
  * Copyright(c) 2013 Pavel Vlasov <freakycue@gmail.com>
  * MIT Licensed
  */
@@ -25,19 +25,17 @@ export default class MongoStore extends EventEmitter {
   constructor(options = {}) {
     super();
     const {
-      ttl,
       db,
       collection,
       url,
       user,
       password
-      } = options;
+    } = options;
 
     if (url && ('host' in options || 'port' in options || 'db' in options || 'ssl' in options)) {
       throw new Error('url option is exclusive from host, port, db and ssl options, please include as a full url connection string');
     }
 
-    this.ttl = ttl;
     this.col = db && typeof db !== 'string' && typeof db.dropDatabase === 'function' ?
       this._initWithDb({db, collection}) :
       this._initWithUrl({
@@ -147,13 +145,13 @@ export default class MongoStore extends EventEmitter {
    * @param {Session} sess
    * @api public
    */
-  *set(sid, sess) {
-    const maxAge = sess.cookie.maxAge || sess.cookie.maxage;
+  *set(sid, sess, ttl) {
+    const maxAge = sess.cookie && (sess.cookie.maxAge || sess.cookie.maxage);
     const col = yield this.col;
     const update = thunkify(col.update.bind(col));
 
     sess.sid = sid;
-    sess.ttl = new Date((this.ttl || ('number' == typeof maxAge
+    sess.ttl = new Date((ttl || ('number' == typeof maxAge
       ? maxAge : ONE_DAY)) + Date.now());
 
     return yield update({sid: sid}, sess, {upsert: true});

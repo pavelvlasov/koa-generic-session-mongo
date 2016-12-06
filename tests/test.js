@@ -41,6 +41,17 @@ const describeStore = (msg, storeOptions, options={}) => {
       //noinspection BadExpressionStatementJS
       expect(result).to.not.ok;
     });
+
+    it('should set ttl', function *() {
+      const sess = {
+        name: 'name'
+      };
+      yield store.set('123', sess, 12345);
+      const col = yield store.col;
+      const result = yield thunkify(col.findOne.bind(col))({sid: '123'}, {_id: 0});
+      //noinspection BadExpressionStatementJS
+      expect(result.ttl.valueOf()).to.be.ok;
+    });
   });
 };
 
@@ -101,4 +112,3 @@ describe('url info exclusive', function () {
     assert.throw(() => {new MongoStore({url: 'mongodb://127.0.0.1:27017', ssl: true})});
   });
 });
-
