@@ -14,6 +14,8 @@ var _createClass = require('babel-runtime/helpers/create-class')['default'];
 
 var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
 
+var _extends = require('babel-runtime/helpers/extends')['default'];
+
 var _Promise = require('babel-runtime/core-js/promise')['default'];
 
 var _regeneratorRuntime = require('babel-runtime/regenerator')['default'];
@@ -188,24 +190,26 @@ var MongoStore = (function (_EventEmitter) {
       return _regeneratorRuntime.wrap(function set$(context$2$0) {
         while (1) switch (context$2$0.prev = context$2$0.next) {
           case 0:
+            // clone original sess
+            sess = _extends({}, sess);
             maxAge = sess.cookie && (sess.cookie.maxAge || sess.cookie.maxage);
-            context$2$0.next = 3;
+            context$2$0.next = 4;
             return this.col;
 
-          case 3:
+          case 4:
             col = context$2$0.sent;
             update = (0, _thunkify2['default'])(col.update.bind(col));
 
             sess.sid = sid;
             sess.ttl = new Date((ttl || ('number' == typeof maxAge ? maxAge : ONE_DAY)) + Date.now());
 
-            context$2$0.next = 9;
+            context$2$0.next = 10;
             return update({ sid: sid }, sess, { upsert: true });
 
-          case 9:
+          case 10:
             return context$2$0.abrupt('return', context$2$0.sent);
 
-          case 10:
+          case 11:
           case 'end':
             return context$2$0.stop();
         }
