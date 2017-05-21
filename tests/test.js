@@ -18,10 +18,16 @@ const describeStore = (msg, storeOptions, options={}) => {
     before(function (done) {
       store = new MongoStore(typeof storeOptions === 'function' ? storeOptions() : storeOptions)
         .on('connect', function (conn) {
-          cleanDb && conn.db.dropDatabase();
+          cleanDb && conn.drop();
           done();
         })
         .on('error', done);
+    });
+
+    it('collection name should be sessions (by default) or equal to collection (when option presented)', function *() {
+      const name = storeOptions.collection || 'sessions'
+      const result = (yield store.col).s.name;
+      expect(result).to.deep.equal(name);
     });
 
     it('should save session to db', function *() {
@@ -55,7 +61,8 @@ const describeStore = (msg, storeOptions, options={}) => {
   });
 };
 
-describeStore('store from url', {url: 'mongodb://127.0.0.1:27017/test'}, {cleanDb: true});
+describeStore('store from url with custom session name', {url: 'mongodb://127.0.0.1:27017/test', collection: 'custom_sessions'}, {cleanDb: true});
+describeStore('store from url with default session name', {url: 'mongodb://127.0.0.1:27017/test'}, {cleanDb: true});
 
 describe('test auth', function() {
   let db;
@@ -84,7 +91,7 @@ describe('closed db', function() {
   before(function *() {
     db = yield thunkify(MongoClient.connect)('mongodb://127.0.0.1:27017/test');
     yield thunkify(db.close.bind(db))();
-    store = new MongoStore({db})
+    store = new MongoStore({db});
   });
 
   it('should crush', function *() {
