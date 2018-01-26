@@ -20,7 +20,9 @@ var MongoStore = require('koa-generic-session-mongo');
 var app = koa();
 app.keys = ['keys', 'keykeys'];
 app.use(session({
-  store: new MongoStore()
+  store: new MongoStore({
+    host: '127.0.0.1'
+  }) // options
 }));
 
 app.use(function *() {
